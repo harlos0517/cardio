@@ -87,4 +87,10 @@ export default {
       baseURL: process.env.BACKEND_URL,
     },
   },
+
+  target: 'static',
+  
+  generate: {
+    dir: '../docs'
+  }
 }
