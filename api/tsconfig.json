@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "target": "ES2018",
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "lib": ["ESNext", "ESNext.AsyncIterable", "DOM"],
+    "esModuleInterop": true,
+    "sourceMap": true,
+    "strict": true,
+    "experimentalDecorators": true,
+    "forceConsistentCasingInFileNames": false,
+    // "noUncheckedIndexedAccess": true,
+    "declaration": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"],
+    },
+    "types": [],
+    "rootDir": "src",
+    "outDir": "build",
+    "composite": true
+  },
+  "exclude": ["./build/**/*"],
+}

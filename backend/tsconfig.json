@@ -1,0 +1,33 @@
+{
+  "compilerOptions": {
+    "target": "ESNEXT",
+    "module": "commonjs",
+    "moduleResolution": "Node",
+    "lib": [
+      "ESNext",
+      "ESNext.AsyncIterable",
+      "DOM",
+    ],
+    "sourceMap": true,
+    "strict": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": false,
+    "experimentalDecorators": true,
+
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"],
+      "@api/*": ["../api/src/*"]
+    },
+    "types": [
+      "@types/node",
+      "./declare/extend",
+    ],
+  },
+  "exclude": [
+    "node_modules",
+  ],
+  "references": [
+    { "path": "../api" },
+  ],
+}
