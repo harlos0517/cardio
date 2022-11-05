@@ -7,12 +7,12 @@
       .my-2
         button.btn.btn-primary(@click="logout()") LOGOUT
       .row.my-5
-        .col-10
+        .col-md-10.col-9
           input.w-100.h-100(type="text" v-model="postContent")
-        .col-2
+        .col-md-2.col-3
           button.btn.btn-primary.w-100.h-100(@click="post('edit')") POST
       .row.my-5
-        .col-3.my-2(v-for="post in posts")
+        .col-lg-3.col-sm-6.col-12.my-2(v-for="post in posts")
           b-card.post-tiem.bg-dark
             b-card-title {{ post.user ? post.user.name : 'unknown' }}
             p {{ post.content }}
