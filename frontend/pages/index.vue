@@ -14,7 +14,7 @@
       .row.my-5
         .col-3.my-2(v-for="post in posts")
           b-card.post-tiem.bg-dark
-            b-card-title {{ post.user ? post.user.name : '' }}
+            b-card-title {{ post.user ? post.user.name : 'unknown' }}
             p {{ post.content }}
     template(v-else)
       form.text-center(:action="googleLoginUrl" method="post")
@@ -63,8 +63,12 @@ export default defineComponent({
     const fetchPosts = async() => {
       const postsData = await $api(getLatestPosts())()
       posts.value = await Promise.all(postsData.map(async post => {
-        const user = await $api(getUser(post.userId))()
-        return { ...post, user }
+        try {
+          const user = await $api(getUser(post.userId))()
+          return { ...post, user }
+        } catch {
+          return post
+        }
       }))
     }
 
