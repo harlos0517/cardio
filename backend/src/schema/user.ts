@@ -23,6 +23,11 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: false,
   },
+  username: {
+    type: String,
+    required: false,
+    sparse: true,
+  },
   name: {
     type: String,
     required: true,
@@ -30,7 +35,9 @@ const UserSchema = new mongoose.Schema({
 })
 
 // schemaRequireAll(UserSchema)
-UserSchema.plugin(passportLocalMongoose)
+UserSchema.plugin(passportLocalMongoose, {
+  usernameField: '_id',
+})
 
 export const UserModel: PassportLocalModel<UserDoc> = mongoose.model(
   'User',
