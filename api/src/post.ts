@@ -1,6 +1,6 @@
 export type Post = {
   userId: string
-  createdAt: Date
+  createdAt: string // ISO string
   content: string
 }
 

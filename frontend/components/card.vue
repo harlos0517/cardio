@@ -1,16 +1,17 @@
 <template lang="pug">
-  div.post-card(v-if="post")
+  div.post-card
     div.header.flex-row
-      div.name.px-1.rounded-top {{ post.user ? post.user.name : 'unknown' }}
+      div.name.px-1.rounded-top {{ user }}
       div.gap.flex-fill
-      div.
+      div.ago.px-1.rounded-top  {{ timeAgo }}
     b-card.card.post-item.bg-dark.rounded-bottom(no-body)
-      b-card-body.px-1.py-0.post-content {{ post.content }}
+      b-card-body.px-1.py-0.post-content {{ content }}
 </template>
 
 <script lang="ts">
+import { defineComponent, ref, onMounted, toRefs, useContext, computed } from '@nuxtjs/composition-api'
+import { DateTime } from 'luxon'
 
-import { defineComponent, ref, onMounted, toRefs, useContext } from '@nuxtjs/composition-api'
 // import { StoreState } from '@/store'
 
 import { User } from '@api/user'
@@ -30,6 +31,14 @@ export default defineComponent({
     const { $api } = useContext()
   
     const post = ref<PostData>()
+    const user = computed(() => post.value?.user?.name || '')
+    const content = computed(() => post.value?.content || '')
+    const timeAgo = computed(() => {
+      const timeStr = post.value?.createdAt
+      if (!timeStr) return ''
+      const time = DateTime.fromISO(timeStr)
+      return time.setLocale('en').toRelative({ style: 'short' })
+    })
 
     onMounted(async() => {
       const postData: PostData = await $api(getPost(postId.value))()
@@ -40,14 +49,14 @@ export default defineComponent({
       }
     })
 
-    return { post }
+    return { user, content, timeAgo }
   },
 })
 </script>
 
 <style lang="sass" scoped>
 .post-card
-  .name
+  .name, .ago
     background-color: black
     border: grey solid 1px
     border-bottom: none
