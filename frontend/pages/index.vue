@@ -1,5 +1,5 @@
 <template lang="pug">
-  #index.text-white
+  #index.text-white.px-2.py-5
     #title.text-center
       span.display-1.my-5: strong Cardio
     .container.text-center(v-if="loggedIn")
@@ -8,17 +8,18 @@
         button.btn.btn-primary(@click="logout()") LOGOUT
       .row.my-5
         .col-md-10.col-9
-          input.w-100.h-100(type="text" v-model="postContent")
+          textarea.bg-dark.text-white.w-100.rounded.px-1(type="text" v-model="postContent")
         .col-md-2.col-3
-          button.btn.btn-primary.w-100.h-100(@click="post('edit')") POST
-      .row.my-5
-        .col-lg-3.col-sm-6.col-12.my-2(v-for="post in posts")
-          b-card.post-tiem.bg-dark
-            b-card-title {{ post.user ? post.user.name : 'unknown' }}
-            p {{ post.content }}
-    template(v-else)
-      form.text-center(:action="googleLoginUrl" method="post")
-        input.btn.btn-primary.m-2(type="submit" value="Login with Google")
+          button.btn.btn-primary.w-100.h-100(
+            :disabled="postButtonDisabled"
+            @click="post('edit')"
+          ) POST
+    form.text-center(v-else :action="googleLoginUrl" method="post")
+      input.btn.btn-primary.m-2(type="submit" value="Login with Google")
+    .container
+      .row.row-cols-xl-4.row-cols-lg-3.row-cols-sm-2.row-cols-1.my-4
+        .col.my-2.middle-center(v-for="postId in postIds")
+          Card(:postId="postId" :key="postId")
 </template>
 
 <script lang="ts">
@@ -30,14 +31,9 @@ import {
   ref,
   onMounted,
 } from '@nuxtjs/composition-api'
-// import { StoreState } from '@/store'
 
 import { StoreState } from '@/store'
 
-import { User } from '@api/user'
-import { Post } from '@api/post'
-
-import { getUser } from '@/routes/user'
 import { createPost, getLatestPosts } from '@/routes/post'
 
 export default defineComponent({
@@ -54,22 +50,22 @@ export default defineComponent({
     }
 
     const postContent = ref('')
+    const postButtonDisabled = ref(false)
     const post = async () => {
-      await $api(createPost())({ content: postContent.value })
-      fetchPosts()
+      postButtonDisabled.value = true
+      try {
+        await $api(createPost())({ content: postContent.value })
+        postContent.value = ''
+      } catch (err) {
+        console.error(err)
+      }
+      await fetchPosts()
+      postButtonDisabled.value = false
     }
 
-    const posts = ref<(Post & { user?: User })[]>([])
+    const postIds = ref<string[]>([])
     const fetchPosts = async() => {
-      const postsData = await $api(getLatestPosts())()
-      posts.value = await Promise.all(postsData.map(async post => {
-        try {
-          const user = await $api(getUser(post.userId))()
-          return { ...post, user }
-        } catch {
-          return post
-        }
-      }))
+      postIds.value = await $api(getLatestPosts())()
     }
 
     onMounted(() => {
@@ -82,8 +78,9 @@ export default defineComponent({
       logout,
       googleLoginUrl,
       postContent,
+      postButtonDisabled,
       post,
-      posts,
+      postIds,
     }
   },
 })
@@ -91,8 +88,12 @@ export default defineComponent({
 
 <style lang="sass" scoped>
 #index
-  background-color: #470024
+  background-color: #21130A
   min-height: 100vh
-#title>span
-  font-weight: 900
+  #title>span
+    font-weight: 900
+  textarea
+    resize: none
+    height: 120px
+    vertical-align: top
 </style>
