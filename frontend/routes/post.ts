@@ -1,7 +1,7 @@
 import * as PostApi from '@api/post'
 import { axiosRequest, METHODS } from '@/middleware/api'
 
-export const getPostById = (postId: string) =>
+export const getPost = (postId: string) =>
   axiosRequest<PostApi.GetPost.Response>(METHODS.GET, '/post/' + postId)
 
 export const getLatestPosts = () =>

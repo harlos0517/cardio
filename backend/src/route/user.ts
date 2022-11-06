@@ -20,7 +20,7 @@ router.get('/user/me', auth,
   }),
 )
 
-router.get('/user/:id', auth,
+router.get('/user/:id',
   typedRequestHandler<UserApi.GetMe.Response>(async(req, res, _next) => {
     const { id } = req.params
     const user = await UserModel.findById(id)

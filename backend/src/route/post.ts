@@ -19,16 +19,18 @@ router.get('/post/:id',
 
 router.get('/posts/latest',
   typedRequestHandler<PostApi.GetLatestPosts.Response>(async(req, res, _next) => {
-    const posts = await PostModel.find({})
-    res.status(200).send({ data: posts })
+    const posts = await PostModel.find({}).sort({ createdAt: 'desc' }).select('_id')
+    const postIds = posts.map(({ _id }) => _id)
+    res.status(200).send({ data: postIds })
   }),
 )
 
 router.get('/posts/me', auth,
   typedRequestHandler<PostApi.GetLatestPosts.Response>(async(req, res, _next) => {
     const userId = req.session.user?._id
-    const posts = await PostModel.find({ userId })
-    res.status(200).send({ data: posts })
+    const posts = await PostModel.find({ userId }).select('_id')
+    const postIds = posts.map(({ _id }) => _id)
+    res.status(200).send({ data: postIds })
   }),
 )
 
@@ -36,6 +38,7 @@ router.post('/post', auth,
   typedRequestHandler<PostApi.CreatePost.Response, PostApi.CreatePost.Request>(async(req, res, _next) => {
     const { content } = req.body
     const userId = req.session.user?._id
+    if (!content) return res.status(401).send({ error: 'Content cannot be blank.' })
     const newPost = await PostModel.create({
       userId,
       createdAt: Date.now(),

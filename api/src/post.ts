@@ -11,11 +11,11 @@ export namespace GetPost {
 }
 
 export namespace GetLatestPosts {
-  export type Response = PostResponse[]
+  export type Response = string[]
 }
 
 export namespace GetMyPosts {
-  export type Response = PostResponse[]
+  export type Response = string[]
 }
 
 export namespace CreatePost {
