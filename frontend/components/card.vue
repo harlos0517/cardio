@@ -3,7 +3,7 @@
     div.header.flex-row
       div.name.px-1.rounded-top {{ user }}
       div.gap.flex-fill
-      div.ago.px-1.rounded-top  {{ timeAgo }}
+      div.ago.px-1.rounded-top {{ timeAgo }}
     b-card.card.post-item.bg-dark.rounded-bottom(no-body)
       b-card-body.px-1.py-0.post-content {{ content }}
 </template>
@@ -56,15 +56,23 @@ export default defineComponent({
 
 <style lang="sass" scoped>
 .post-card
-  .name, .ago
-    background-color: black
-    border: grey solid 1px
-    border-bottom: none
-  .gap
-    border-bottom: grey solid 1px
+  font-size: 12px
+  .header
+    max-width: 320px
+    .name, .ago
+      flex: 0 1 auto
+      background-color: black
+      border: grey solid 1px
+      border-bottom: none
+      white-space: nowrap
+      text-overflow: ellipsis
+      overflow: hidden
+    .gap
+      width: 5px
+      border-bottom: grey solid 1px
   .card
-    width: 240px
-    height: 135px
+    width: 320px
+    height: 180px
     border: grey solid 1px
     border-top: none
     border-top-left-radius: 0
