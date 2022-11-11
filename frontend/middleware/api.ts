@@ -58,6 +58,14 @@ export const axiosRequest = <Data = undefined, Payload = undefined>(
 }
 /* eslint-enable indent */
 
+export const toQueryString = (object: Record<string, string | number | boolean>) => {
+  let str = '?' + Object.keys(object).reduce((a, k) => {
+    a.push(k + '=' + encodeURIComponent(object[k] as string | number | boolean));
+    return a;
+  }, [] as string[]).join('&');
+  return str;
+}
+
 export default (ctx: Context) => {
   ctx.$api = axiosRoute =>
     payload => axiosRoute(ctx.$axios, payload)

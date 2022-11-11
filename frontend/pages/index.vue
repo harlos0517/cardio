@@ -57,7 +57,6 @@ export default defineComponent({
         await $api(createPost())({ content: postContent.value })
         postContent.value = ''
         $toast.success('Post success.')
-
       } catch (err) {
         $toast.error(err as string)
       }
@@ -67,7 +66,14 @@ export default defineComponent({
 
     const postIds = ref<string[]>([])
     const fetchPosts = async() => {
-      postIds.value = await $api(getLatestPosts())()
+      postIds.value = await $api(getLatestPosts({ limit: 16 }))()
+    }
+    const fetchMorePosts = async() => {
+      const limit = 8
+      const postCount = postIds.value.length
+      const beforeId = postIds.value[postCount - 1]
+      const query = { limit, beforeId }
+      postIds.value = postIds.value.concat(await $api(getLatestPosts(query))())
     }
 
     onMounted(() => {

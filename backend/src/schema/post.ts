@@ -1,4 +1,5 @@
 import mongoose, { Model, Document } from 'mongoose'
+import mongoosePaginate from 'mongoose-paginate-v2'
 
 import { Post } from '@api/post'
 import { schemaRequireAll } from '@/util/schema'
@@ -11,4 +12,6 @@ const PostSchema = new mongoose.Schema({
   content: String,
 })
 schemaRequireAll(PostSchema)
-export const PostModel: Model<PostDoc> = mongoose.model('Post', PostSchema)
+PostSchema.plugin(mongoosePaginate)
+
+export const PostModel = mongoose.model<PostDoc, mongoose.PaginateModel<PostDoc>>('Post', PostSchema)
