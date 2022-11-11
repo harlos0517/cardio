@@ -61,6 +61,7 @@ export default {
     'bootstrap-vue/nuxt',
     // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',
+    '@nuxtjs/toast',
   ],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
@@ -92,5 +93,11 @@ export default {
   
   generate: {
     dir: '../docs'
-  }
+  },
+
+  toast: {
+    position: 'bottom-right',
+    duration: 3000,
+    keepOnHover: true,
+  },
 }

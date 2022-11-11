@@ -40,7 +40,7 @@ export default defineComponent({
   setup() {
     const store = useStore() as StoreState
     const userStore = store.state.user
-    const { $api } = useContext()
+    const { $api, $toast } = useContext()
 
     const name = computed(() => userStore.name)
     const loggedIn = computed(() => userStore.loggedIn)
@@ -56,8 +56,10 @@ export default defineComponent({
       try {
         await $api(createPost())({ content: postContent.value })
         postContent.value = ''
+        $toast.success('Post success.')
+
       } catch (err) {
-        console.error(err)
+        $toast.error(err as string)
       }
       await fetchPosts()
       postButtonDisabled.value = false
