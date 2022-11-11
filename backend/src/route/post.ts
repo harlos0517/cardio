@@ -19,8 +19,17 @@ router.get('/post/:id',
 
 router.get('/posts/latest',
   typedRequestHandler<PostApi.GetLatestPosts.Response>(async(req, res, _next) => {
-    const posts = await PostModel.find({}).sort({ createdAt: 'desc' }).select('_id')
-    const postIds = posts.map(({ _id }) => _id)
+    const limit = Number(req.query.limit as string) || 8
+    const beforeId = req.query.beforeId as string || null
+    const beforeTime = beforeId ? (await PostModel.findById(beforeId))?.createdAt || null : null
+    const query = beforeTime ? { 'createdAt': { '$lt': new Date(beforeTime) } } : {}
+    const option = {
+      sort: { createdAt: 'desc' },
+      select: '_id',
+      limit,
+    }
+    const posts = await PostModel.paginate(query, option)
+    const postIds = posts.docs.map(({ _id }) => _id)
     res.status(200).send({ data: postIds })
   }),
 )

@@ -36,7 +36,9 @@ export default {
   css: [],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-  plugins: [],
+  plugins: [
+    '@/plugins/vue-infinite-scroll'
+  ],
 
   router: { middleware: ['auth', 'api'] },
 
@@ -61,6 +63,7 @@ export default {
     'bootstrap-vue/nuxt',
     // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',
+    '@nuxtjs/toast',
   ],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
@@ -92,5 +95,11 @@ export default {
   
   generate: {
     dir: '../docs'
-  }
+  },
+
+  toast: {
+    position: 'bottom-right',
+    duration: 3000,
+    keepOnHover: true,
+  },
 }

@@ -2,23 +2,26 @@
   #index.text-white.px-2.py-5
     #title.text-center
       span.display-1.my-5: strong Cardio
-    .container.text-center(v-if="loggedIn")
+    .page-container.text-center(v-if="loggedIn")
       div Logged in as {{ name }}
       .my-2
         button.btn.btn-primary(@click="logout()") LOGOUT
       .row.my-5
-        .col-md-10.col-9
+        .col.col-md-10.col-9.px-2
           textarea.bg-dark.text-white.w-100.rounded.px-1(type="text" v-model="postContent")
-        .col-md-2.col-3
+        .col.col-md-2.col-3.px-2
           button.btn.btn-primary.w-100.h-100(
             :disabled="postButtonDisabled"
             @click="post('edit')"
           ) POST
     form.text-center(v-else :action="googleLoginUrl" method="post")
       input.btn.btn-primary.m-2(type="submit" value="Login with Google")
-    .container
-      .row.row-cols-xl-4.row-cols-lg-3.row-cols-sm-2.row-cols-1.my-4
-        .col.my-2.middle-center(v-for="postId in postIds")
+    #cards-container.page-container
+      .row.my-4(
+        v-infinite-scroll="fetchMorePosts"
+        infinite-scroll-disabled="stopLoad"
+      )
+        .col.card-container.my-3.middle-center(v-for="postId in postIds")
           Card(:postId="postId" :key="postId")
 </template>
 
@@ -40,7 +43,7 @@ export default defineComponent({
   setup() {
     const store = useStore() as StoreState
     const userStore = store.state.user
-    const { $api } = useContext()
+    const { $api, $toast } = useContext()
 
     const name = computed(() => userStore.name)
     const loggedIn = computed(() => userStore.loggedIn)
@@ -56,16 +59,28 @@ export default defineComponent({
       try {
         await $api(createPost())({ content: postContent.value })
         postContent.value = ''
+        $toast.success('Post success.')
       } catch (err) {
-        console.error(err)
+        $toast.error(err as string)
       }
       await fetchPosts()
       postButtonDisabled.value = false
     }
 
     const postIds = ref<string[]>([])
+    const stopLoad = ref(false)
     const fetchPosts = async() => {
-      postIds.value = await $api(getLatestPosts())()
+      postIds.value = await $api(getLatestPosts({ limit: 16 }))()
+      stopLoad.value = false
+    }
+    const fetchMorePosts = async() => {
+      const limit = 8
+      const postCount = postIds.value.length
+      const beforeId = postIds.value[postCount - 1]
+      const query = { limit, beforeId }
+      const newPosts = await $api(getLatestPosts(query))()
+      if (!newPosts.length) stopLoad.value = true
+      else postIds.value = postIds.value.concat(newPosts)
     }
 
     onMounted(() => {
@@ -81,6 +96,8 @@ export default defineComponent({
       postButtonDisabled,
       post,
       postIds,
+      stopLoad,
+      fetchMorePosts,
     }
   },
 })
@@ -96,4 +113,28 @@ export default defineComponent({
     resize: none
     height: 120px
     vertical-align: top
+  .page-container
+    margin: 0 auto
+    width: 1360px
+    @media screen and (max-width: 1400px)
+      width: 1020px
+    @media screen and (max-width: 1100px)
+      width: 680px
+    @media screen and (max-width: 720px)
+      width: 340px
+    .row
+      margin-left: 0
+      margin-right: 0
+      .col
+        padding-left: 0
+        padding-right: 0
+  #cards-container
+    .card-container
+      flex: 0 0 25%
+      @media screen and (max-width: 1400px)
+        flex: 0 0 33.33333%
+      @media screen and (max-width: 1100px)
+        flex: 0 0 50%
+      @media screen and (max-width: 720px)
+        flex: 0 0 100%
 </style>
