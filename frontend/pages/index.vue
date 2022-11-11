@@ -18,7 +18,7 @@
       input.btn.btn-primary.m-2(type="submit" value="Login with Google")
     #cards-container.page-container
       .row.my-4
-        .col.card-conatiner.my-3.middle-center(v-for="postId in postIds")
+        .col.card-container.my-3.middle-center(v-for="postId in postIds")
           Card(:postId="postId" :key="postId")
 </template>
 
