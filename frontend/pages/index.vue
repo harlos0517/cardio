@@ -17,7 +17,10 @@
     form.text-center(v-else :action="googleLoginUrl" method="post")
       input.btn.btn-primary.m-2(type="submit" value="Login with Google")
     #cards-container.page-container
-      .row.my-4
+      .row.my-4(
+        v-infinite-scroll="fetchMorePosts"
+        infinite-scroll-disabled="stopLoad"
+      )
         .col.card-container.my-3.middle-center(v-for="postId in postIds")
           Card(:postId="postId" :key="postId")
 </template>
@@ -65,15 +68,19 @@ export default defineComponent({
     }
 
     const postIds = ref<string[]>([])
+    const stopLoad = ref(false)
     const fetchPosts = async() => {
       postIds.value = await $api(getLatestPosts({ limit: 16 }))()
+      stopLoad.value = false
     }
     const fetchMorePosts = async() => {
       const limit = 8
       const postCount = postIds.value.length
       const beforeId = postIds.value[postCount - 1]
       const query = { limit, beforeId }
-      postIds.value = postIds.value.concat(await $api(getLatestPosts(query))())
+      const newPosts = await $api(getLatestPosts(query))()
+      if (!newPosts.length) stopLoad.value = true
+      else postIds.value = postIds.value.concat(newPosts)
     }
 
     onMounted(() => {
@@ -89,6 +96,8 @@ export default defineComponent({
       postButtonDisabled,
       post,
       postIds,
+      stopLoad,
+      fetchMorePosts,
     }
   },
 })
