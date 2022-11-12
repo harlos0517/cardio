@@ -7,6 +7,9 @@ export const getMe = () =>
 export const getUser = (userId: string) =>
   axiosRequest<UserApi.GetUser.Response>(METHODS.GET, '/user/' + userId)
 
+export const editMe = () =>
+  axiosRequest<UserApi.EditMe.Response, UserApi.EditMe.Request>(METHODS.PUT, '/user/me')
+
 export const login = () =>
   axiosRequest<UserApi.Login.Response, UserApi.Login.Request>(METHODS.POST, '/login')
 

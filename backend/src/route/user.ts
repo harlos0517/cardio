@@ -29,6 +29,20 @@ router.get('/user/:id',
   }),
 )
 
+router.put('/user/me',
+  typedRequestHandler<UserApi.EditMe.Response, UserApi.EditMe.Request>(async(req, res, _next) => {
+    const user = req.session.user
+    if (!user) return res.sendStatus(401)
+    const { name: rawName } = req.body
+    const name = rawName.trim()
+    if (!name) return res.status(400).send({ error: 'Name cannot be empty.' })
+    const updatedUser = await UserModel.findByIdAndUpdate(user._id, { name }, { new: true })
+    if (!updatedUser) return res.sendStatus(404)
+    req.session.user = updatedUser
+    res.status(200).send({ data: updatedUser })
+  }),
+)
+
 // router.post('/login', async(req, res, _next) => {
 //   const { username, password } = req.body as UserApi.Login.Request
 //   const { error, user } = await UserModel.authenticate()(username, password)

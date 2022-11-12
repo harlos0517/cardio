@@ -5,7 +5,8 @@
     .page-container.text-center(v-if="loggedIn")
       div Logged in as {{ name }}
       .my-2
-        button.btn.btn-primary(@click="logout()") LOGOUT
+        button.btn.btn-primary.mr-2(@click="logout()") LOGOUT
+        nuxt-link(to="/me"): button.btn.btn-primary() MY ACCOUNT
       .row.my-5
         .col.col-md-10.col-9.px-2
           textarea.bg-dark.text-white.w-100.rounded.px-1(type="text" v-model="postContent")
@@ -68,7 +69,7 @@ export default defineComponent({
     }
 
     const postIds = ref<string[]>([])
-    const stopLoad = ref(false)
+    const stopLoad = ref(true)
     const fetchPosts = async() => {
       postIds.value = await $api(getLatestPosts({ limit: 16 }))()
       stopLoad.value = false
