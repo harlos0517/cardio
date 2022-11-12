@@ -15,6 +15,13 @@ export namespace GetUser {
   export type Response = UserResponse
 }
 
+export namespace EditMe {
+  export type Request = {
+    name: string
+  }
+  export type Response = UserResponse
+}
+
 export namespace Login {
   export type Request = {
     username: string

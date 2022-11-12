@@ -21,7 +21,13 @@ router.get('/posts/latest',
   typedRequestHandler<PostApi.GetLatestPosts.Response>(async(req, res, _next) => {
     const limit = Number(req.query.limit as string) || 8
     const beforeId = req.query.beforeId as string || null
-    const beforeTime = beforeId ? (await PostModel.findById(beforeId))?.createdAt || null : null
+    let beforePost = null
+    try {
+      beforePost = await PostModel.findById(beforeId)
+    } catch (err) {
+      console.error('Error finding Post with _id ' + beforeId)
+    }
+    const beforeTime = beforePost?.createdAt || null
     const query = beforeTime ? { 'createdAt': { '$lt': new Date(beforeTime) } } : {}
     const option = {
       sort: { createdAt: 'desc' },
