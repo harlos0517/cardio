@@ -8,7 +8,9 @@ import passportLocalMongoose from 'passport-local-mongoose'
 import { User } from '@api/user'
 // import { schemaRequireAll } from '@/util/schema'
 
-export interface UserDoc extends User, PassportLocalDocument {}
+export interface UserDoc extends User, PassportLocalDocument {
+  profilePhoto: Buffer
+}
 
 const UserSchema = new mongoose.Schema({
   googleId: {
@@ -30,6 +32,10 @@ const UserSchema = new mongoose.Schema({
   },
   name: {
     type: String,
+    required: true,
+  },
+  profilePhoto: {
+    type: Buffer,
     required: true,
   },
 })

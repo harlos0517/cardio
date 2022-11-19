@@ -1,9 +1,12 @@
 <template lang="pug">
   div.post-card
     div.header.flex-row
-      div.name.px-1.rounded-top {{ user }}
+      div.name.pr-1.rounded-top.middle-center
+        img.photo.rounded-circle.m-1(:src="photoUrl")
+        span {{ user }}
       div.gap.flex-fill
-      div.ago.px-1.rounded-top {{ timeAgo }}
+      div.ago.px-1.rounded-top.middle-center
+        span {{ timeAgo }}
     b-card.card.post-item.bg-dark.rounded-bottom(no-body)
       b-card-body.px-1.py-0.post-content {{ content }}
 </template>
@@ -28,7 +31,7 @@ export default defineComponent({
   },
   setup(props) {
     const { postId } = toRefs(props)
-    const { $api } = useContext()
+    const { $api, $axios } = useContext()
   
     const post = ref<PostData>()
     const user = computed(() => post.value?.user?.name || '')
@@ -39,6 +42,9 @@ export default defineComponent({
       const time = DateTime.fromISO(timeStr)
       return time.setLocale('en').toRelative({ style: 'short' })
     })
+    const photoUrl = computed(() => post.value ?
+      `${$axios.defaults.baseURL}/user/${post.value.userId}/photo` : ''
+    )
 
     onMounted(async() => {
       const postData: PostData = await $api(getPost(postId.value))()
@@ -49,7 +55,7 @@ export default defineComponent({
       }
     })
 
-    return { user, content, timeAgo }
+    return { user, content, timeAgo, photoUrl }
   },
 })
 </script>
@@ -59,6 +65,11 @@ export default defineComponent({
   font-size: 12px
   .header
     max-width: 320px
+    .photo
+      width: 3em
+      height: 3em
+    .name
+      border-top-left-radius: 1.75em!important
     .name, .ago
       flex: 0 1 auto
       background-color: black

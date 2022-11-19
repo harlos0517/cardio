@@ -1,5 +1,6 @@
 export type User = {
   googleId?: string
+  discordId?: string
   email?: string
   username?: string
   name: string

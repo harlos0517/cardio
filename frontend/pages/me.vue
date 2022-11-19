@@ -5,6 +5,10 @@
         h2 My account
       .row.my-2
         b-input-group
+          b-form-file(ref="fileInput" type="file" name="avatar")
+          b-button.bg-success(@click="changePhoto") Change
+      .row.my-2
+        b-input-group
           b-input-group-prepend
             b-input-group-text Display Name
           b-form-input.bg-dark.text-white(
@@ -25,6 +29,7 @@
               v-else
               @click="changeDisplayName"
             ) Confirm
+
       .row
         nuxt-link(to="/"): button.btn.btn-primary() BACK
 </template>
@@ -39,7 +44,7 @@ import {
  } from '@nuxtjs/composition-api'
 import { StoreState } from '@/store'
 
-import { editMe } from '@/routes/user'
+import { editMe, updateProfilePhoto } from '@/routes/user'
 
 export default defineComponent({
   setup() {
@@ -49,6 +54,22 @@ export default defineComponent({
 
     const loggedIn = userStore.loggedIn
     if (!loggedIn) redirect('/')
+
+    const fileInput = ref<HTMLInputElement>()
+    const changePhoto = async() => {
+      try {
+        const files = fileInput.value?.files
+        const file = files ? files[0] || null : null
+        if (!file) throw 'No file specified.'
+        const bodyFormData = new FormData()
+        bodyFormData.append('file', file)
+        await $api(updateProfilePhoto())(bodyFormData)
+        $toast.success('Successfully changed profile photo.')
+      } catch (err) {
+        $toast.error(err as string)
+      }
+    }
+  
     const displayNameInput = ref(userStore.name || '')
     const displayNameIsEditing = ref(false)
     const editDisplayName = () => {
@@ -71,6 +92,8 @@ export default defineComponent({
     })
 
     return {
+      fileInput,
+      changePhoto,
       displayNameInput,
       displayNameIsEditing,
       editDisplayName,
