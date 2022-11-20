@@ -103,8 +103,6 @@ export default defineComponent({
 
 <style lang="sass" scoped>
 #me
-  background-color: #21130A
-  min-height: 100vh
   .content
     .photo
       width: 160px

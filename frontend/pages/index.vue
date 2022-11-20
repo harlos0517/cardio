@@ -106,8 +106,6 @@ export default defineComponent({
 
 <style lang="sass" scoped>
 #index
-  background-color: #21130A
-  min-height: 100vh
   #title>span
     font-weight: 900
   textarea
