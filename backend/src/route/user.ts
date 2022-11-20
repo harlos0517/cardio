@@ -1,8 +1,8 @@
-import express from 'express'
+import express, { Request, Response } from 'express'
 import passport from 'passport'
 import multer from 'multer'
 
-import { UserModel } from '@/schema/user'
+import { UserDoc, UserModel } from '@/schema/user'
 import * as UserApi from '@api/user'
 
 import { auth } from '@/middleware'
@@ -16,15 +16,27 @@ const upload = multer({
   limits: { fileSize: 16 * 1024 * 1024 },
 })
 
+const extractUserData = (user: UserDoc) => {
+  const { email, googleId, name } = user
+  return { email, googleId, name }
+}
+
+const findMe = async(req: Request, res: Response) => {
+  const userId = req.session.userId
+  if (!userId) { res.sendStatus(401); return null }
+  const user = await UserModel.findById(userId)
+  if (!user) { res.sendStatus(404); return null }
+  return user
+}
+
+
 const router = express.Router()
 
 router.get('/user/me', auth,
-  typedRequestHandler<UserApi.GetMe.Response>((req, res, _next) => {
-    const user = req.session.user
-    if (!user) return res.sendStatus(401)
-    const { email, googleId, name } = user
-    const data = { email, googleId, name }
-    res.status(200).send({ data })
+  typedRequestHandler<UserApi.GetMe.Response>(async(req, res, _next) => {
+    const user = await findMe(req, res)
+    if (!user) return
+    res.status(200).send({ data: extractUserData(user) })
   }),
 )
 
@@ -33,20 +45,16 @@ router.get('/user/:id',
     const { id } = req.params
     const user = await UserModel.findById(id)
     if (!user) return res.sendStatus(404)
-    const { email, googleId, name } = user
-    const data = { email, googleId, name }
-    res.status(200).send({ data })
+    res.status(200).send({ data: extractUserData(user) })
   }),
 )
 
 router.get('/user/me/photo', auth,
   async(req, res, _next) => {
-    const user = req.session.user
-    if (!user) return res.sendStatus(401)
-    const userDoc = await UserModel.findById(user._id)
-    if (!userDoc) return res.sendStatus(404)
+    const user = await findMe(req, res)
+    if (!user) return
     res.contentType('image/jpg')
-    res.send(userDoc.profilePhoto)
+    res.send(user.profilePhoto)
   },
 )
 
@@ -62,14 +70,14 @@ router.get('/user/:id/photo',
 
 router.put('/user/me', auth,
   typedRequestHandler<UserApi.EditMe.Response, UserApi.EditMe.Request>(async(req, res, _next) => {
-    const user = req.session.user
-    if (!user) return res.sendStatus(401)
+    const user = await findMe(req, res)
+    if (!user) return
     const { name: rawName } = req.body
     const name = rawName.trim()
     if (!name) return res.status(400).send({ error: 'Name cannot be empty.' })
     const updatedUser = await UserModel.findByIdAndUpdate(user._id, { name }, { new: true })
     if (!updatedUser) return res.sendStatus(404)
-    req.session.user = updatedUser
+    req.session.userId = updatedUser._id
     res.status(200).send({ data: updatedUser })
   }),
 )
@@ -79,8 +87,8 @@ router.post('/user/profilePhoto', auth,
   typedRequestHandler(async(req, res, _next) => {
     const { file } = req
     if (!file) return res.status(400).send({ error: 'Received nothing.' })
-    const user = req.session.user
-    if (!user) return res.sendStatus(401)
+    const user = await findMe(req, res)
+    if (!user) return
     await UserModel.findByIdAndUpdate(user._id, { profilePhoto: file.buffer })
     res.sendStatus(200)
   }),

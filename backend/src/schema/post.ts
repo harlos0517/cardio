@@ -1,4 +1,4 @@
-import mongoose, { Model, Document } from 'mongoose'
+import mongoose, { Document } from 'mongoose'
 import mongoosePaginate from 'mongoose-paginate-v2'
 
 import { Post } from '@api/post'
