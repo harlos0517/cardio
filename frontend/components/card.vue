@@ -2,7 +2,8 @@
   div.post-card
     div.header.flex-row
       div.name.pr-1.rounded-top.middle-center
-        img.photo.rounded-circle.m-1(:src="photoUrl")
+        img.photo.rounded-circle.m-1(v-if="photoUrl" :src="photoUrl")
+        .photo.rounded-circle.m-1(v-else)
         span {{ user }}
       div.gap.flex-fill
       div.ago.px-1.rounded-top.middle-center

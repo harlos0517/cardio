@@ -13,7 +13,7 @@ import { typedRequestHandler } from '@/util/route'
 const storage = multer.memoryStorage()
 const upload = multer({
   storage,
-  limits: { fileSize: 2 * 1024 * 1024 },
+  limits: { fileSize: 16 * 1024 * 1024 },
 })
 
 const router = express.Router()
@@ -28,16 +28,6 @@ router.get('/user/me', auth,
   }),
 )
 
-router.get('/user/:id/photo',
-  async(req, res, _next) => {
-    const { id } = req.params
-    const user = await UserModel.findById(id)
-    if (!user) return res.sendStatus(404)
-    res.contentType('image/jpg')
-    res.send(user.profilePhoto)
-  },
-)
-
 router.get('/user/:id',
   typedRequestHandler<UserApi.GetMe.Response>(async(req, res, _next) => {
     const { id } = req.params
@@ -47,6 +37,27 @@ router.get('/user/:id',
     const data = { email, googleId, name }
     res.status(200).send({ data })
   }),
+)
+
+router.get('/user/me/photo', auth,
+  async(req, res, _next) => {
+    const user = req.session.user
+    if (!user) return res.sendStatus(401)
+    const userDoc = await UserModel.findById(user._id)
+    if (!userDoc) return res.sendStatus(404)
+    res.contentType('image/jpg')
+    res.send(userDoc.profilePhoto)
+  },
+)
+
+router.get('/user/:id/photo',
+  async(req, res, _next) => {
+    const { id } = req.params
+    const user = await UserModel.findById(id)
+    if (!user) return res.sendStatus(404)
+    res.contentType('image/jpg')
+    res.send(user.profilePhoto)
+  },
 )
 
 router.put('/user/me', auth,

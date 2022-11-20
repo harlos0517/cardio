@@ -13,13 +13,11 @@ import cors from 'cors'
 import passportGoogleOauth from 'passport-google-oauth20'
 import https from 'https'
 
-import { UserModel } from '@/schema/user'
-import * as UserApi from '@api/user'
+import { UserDoc, UserModel } from '@/schema/user'
 
 import userRouter from '@/route/user'
 import postRouter from '@/route/post'
-// import trackRouter from '@/route/track'
-// import infoRouter from '@/route/info'
+
 import { googleOauthCallback } from '@/middleware'
 
 const App = express()
@@ -51,8 +49,14 @@ passport.use(new passportGoogleOauth.Strategy(
   },
   googleOauthCallback,
 ))
-passport.serializeUser((user, done) => done(null, user))
-passport.deserializeUser((user, done) => done(null, user as UserApi.User))
+passport.serializeUser((user, done) => {
+  done(null, user._id)
+})
+passport.deserializeUser(async(id, done) => {
+  UserModel.findById(id, (err: mongoose.Error, user: UserDoc) => {
+    done(err, user)
+  })
+})
 
 mongoose.Schema.Types.String.checkRequired(v => v !== null)
 App.use(userRouter)
