@@ -28,12 +28,12 @@ type PostData = Post & { user?: User }
 
 export default defineComponent({
   props: {
-    postId: { type: String, required: true }
+    postId: { type: String, required: true },
   },
   setup(props) {
     const { postId } = toRefs(props)
     const { $api, $axios } = useContext()
-  
+
     const post = ref<PostData>()
     const user = computed(() => post.value?.user?.name || '')
     const content = computed(() => post.value?.content || '')
@@ -44,7 +44,7 @@ export default defineComponent({
       return time.setLocale('en').toRelative({ style: 'short' })
     })
     const photoUrl = computed(() => post.value ?
-      `${$axios.defaults.baseURL}/user/${post.value.userId}/photo` : ''
+      `${$axios.defaults.baseURL}/user/${post.value.userId}/photo` : '',
     )
 
     onMounted(async() => {
@@ -90,7 +90,7 @@ export default defineComponent({
     border-top-left-radius: 0
     border-top-right-radius: 0
     overflow-x: hidden
-    overflow-y: auto 
+    overflow-y: auto
     .post-content
       white-space: pre-wrap
 </style>

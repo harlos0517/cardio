@@ -55,7 +55,7 @@ export default defineComponent({
 
     const postContent = ref('')
     const postButtonDisabled = ref(false)
-    const post = async () => {
+    const post = async() => {
       postButtonDisabled.value = true
       try {
         await $api(createPost())({ content: postContent.value })

@@ -8,7 +8,7 @@ export const getUser = (userId: string) =>
   axiosRequest<UserApi.GetUser.Response>(METHODS.GET, '/user/' + userId)
 
 export const updateProfilePhoto = () =>
-  axiosRequest<undefined, FormData>(METHODS.POST, '/user/profilePhoto', { headers: { "Content-Type": "multipart/form-data" } })
+  axiosRequest<undefined, FormData>(METHODS.POST, '/user/profilePhoto', { headers: { 'Content-Type': 'multipart/form-data' } })
 
 export const editMe = () =>
   axiosRequest<UserApi.EditMe.Response, UserApi.EditMe.Request>(METHODS.PUT, '/user/me')

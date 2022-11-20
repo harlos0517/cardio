@@ -37,7 +37,7 @@ export default {
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
-    '@/plugins/vue-infinite-scroll'
+    '@/plugins/vue-infinite-scroll',
   ],
 
   router: { middleware: ['auth', 'api'] },
@@ -92,9 +92,9 @@ export default {
   },
 
   target: 'static',
-  
+
   generate: {
-    dir: '../docs'
+    dir: '../docs',
   },
 
   toast: {

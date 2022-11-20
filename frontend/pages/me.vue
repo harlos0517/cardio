@@ -38,10 +38,9 @@ import {
   defineComponent,
   ref,
   useStore,
-  onMounted,
   useContext,
-  computed
- } from '@nuxtjs/composition-api'
+  computed,
+} from '@nuxtjs/composition-api'
 import { StoreState } from '@/store'
 
 import { editMe, updateProfilePhoto } from '@/routes/user'
@@ -72,7 +71,7 @@ export default defineComponent({
         $toast.error(err as string)
       }
     }
-  
+
     const displayNameInput = ref(userStore.name || '')
     const displayNameIsEditing = ref(false)
     const editDisplayName = () => {
@@ -89,10 +88,6 @@ export default defineComponent({
         $toast.error(err as string)
       }
     }
-
-    onMounted(() => {
-
-    })
 
     return {
       photoUrl,
