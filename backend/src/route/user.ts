@@ -1,6 +1,7 @@
 import express, { Request, Response } from 'express'
 import passport from 'passport'
 import multer from 'multer'
+import sharp from 'sharp'
 
 import { UserDoc, UserModel } from '@/schema/user'
 import * as UserApi from '@api/user'
@@ -89,8 +90,14 @@ router.post('/user/profilePhoto', auth,
     if (!file) return res.status(400).send({ error: 'Received nothing.' })
     const user = await findMe(req, res)
     if (!user) return
-    await UserModel.findByIdAndUpdate(user._id, { profilePhoto: file.buffer })
-    res.sendStatus(200)
+    try {
+      const processedImage = await sharp(file.buffer).resize(256, 256).jpeg().toBuffer()
+      await UserModel.findByIdAndUpdate(user._id, { profilePhoto: processedImage })
+      res.sendStatus(200)
+    } catch (err) {
+      const error = err as Error
+      res.status(400).send({ error: error.message })
+    }
   }),
 )
 
