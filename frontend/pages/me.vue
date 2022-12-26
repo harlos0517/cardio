@@ -25,11 +25,33 @@
             b-input-group-append
               b-button.bg-primary(
                 v-if="!displayNameIsEditing"
-                @click="editDisplayName"
+                @click="startEditDisplayName"
               ) Edit
               b-button.bg-success(
                 v-else
                 @click="changeDisplayName"
+              ) Confirm
+          b-input-group
+            b-input-group-prepend
+              b-input-group-text Username
+              b-input-group-text.hide-input-border.text-white.pr-1 @
+            b-form-input.bg-dark.text-white.pl-1(
+              v-if="usernameIsEditing"
+              v-model="usernameInput"
+            )
+            b-form-input.hide-input-border.text-white.pl-1(
+              v-else
+              v-model="usernameInput"
+              :disabled="true"
+            )
+            b-input-group-append
+              b-button.bg-primary(
+                v-if="!usernameIsEditing"
+                @click="startEditUsername"
+              ) Edit
+              b-button.bg-success(
+                v-else
+                @click="changeUsername"
               ) Confirm
 </template>
 
@@ -43,7 +65,7 @@ import {
 } from '@nuxtjs/composition-api'
 import { StoreState } from '@/store'
 
-import { editMe, updateProfilePhoto } from '@/routes/user'
+import { editName, editUsername, updateProfilePhoto } from '@/routes/user'
 
 export default defineComponent({
   setup() {
@@ -74,16 +96,33 @@ export default defineComponent({
 
     const displayNameInput = ref(userStore.name || '')
     const displayNameIsEditing = ref(false)
-    const editDisplayName = () => {
+    const startEditDisplayName = () => {
       displayNameIsEditing.value = true
     }
     const changeDisplayName = async() => {
       try {
-        const user = await $api(editMe())({ name: displayNameInput.value })
+        const user = await $api(editName())({ name: displayNameInput.value })
         store.commit('user/setUser', user)
         displayNameIsEditing.value = false
         displayNameInput.value = user.name || ''
         $toast.success('Successfully changed display name.')
+      } catch (err) {
+        $toast.error(err as string)
+      }
+    }
+
+    const usernameInput = ref(userStore.username || '')
+    const usernameIsEditing = ref(false)
+    const startEditUsername = () => {
+      usernameIsEditing.value = true
+    }
+    const changeUsername = async() => {
+      try {
+        const user = await $api(editUsername())({ username: usernameInput.value })
+        store.commit('user/setUser', user)
+        usernameIsEditing.value = false
+        usernameInput.value = user.username || ''
+        $toast.success('Successfully changed username.')
       } catch (err) {
         $toast.error(err as string)
       }
@@ -94,8 +133,12 @@ export default defineComponent({
       changePhoto,
       displayNameInput,
       displayNameIsEditing,
-      editDisplayName,
+      startEditDisplayName,
       changeDisplayName,
+      usernameInput,
+      usernameIsEditing,
+      startEditUsername,
+      changeUsername,
     }
   },
 })

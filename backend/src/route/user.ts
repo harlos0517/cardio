@@ -18,8 +18,8 @@ const upload = multer({
 })
 
 const extractUserData = (user: UserDoc) => {
-  const { email, googleId, name } = user
-  return { email, googleId, name }
+  const { email, googleId, name, username } = user
+  return { email, googleId, name, username }
 }
 
 const findMe = async(req: Request, res: Response) => {
@@ -69,17 +69,35 @@ router.get('/user/:id/photo',
   },
 )
 
-router.put('/user/me', auth,
-  typedRequestHandler<UserApi.EditMe.Response, UserApi.EditMe.Request>(async(req, res, _next) => {
+router.put('/user/me/name', auth,
+  typedRequestHandler<UserApi.EditName.Response, UserApi.EditName.Request>(async(req, res, _next) => {
     const user = await findMe(req, res)
     if (!user) return
-    const { name: rawName } = req.body
-    const name = rawName.trim()
-    if (!name) return res.status(400).send({ error: 'Name cannot be empty.' })
-    const updatedUser = await UserModel.findByIdAndUpdate(user._id, { name }, { new: true })
-    if (!updatedUser) return res.sendStatus(404)
-    req.session.userId = updatedUser._id
-    res.status(200).send({ data: updatedUser })
+    const { name } = req.body
+    try {
+      const updatedUser = await UserModel.findByIdAndUpdate(user._id, { name }, { new: true })
+      if (!updatedUser) return res.sendStatus(404)
+      res.status(200).send({ data: updatedUser })
+    } catch (err) {
+      const error = err as Error
+      res.status(400).send({ error: error.message })
+    }
+  }),
+)
+
+router.put('/user/me/username', auth,
+  typedRequestHandler<UserApi.EditUsername.Response, UserApi.EditUsername.Request>(async(req, res, _next) => {
+    const user = await findMe(req, res)
+    if (!user) return
+    const { username } = req.body
+    try {
+      const updatedUser = await UserModel.findByIdAndUpdate(user._id, { username }, { new: true })
+      if (!updatedUser) return res.sendStatus(404)
+      res.status(200).send({ data: updatedUser })
+    } catch (err) {
+      const error = err as Error
+      res.status(400).send({ error: error.message })
+    }
   }),
 )
 

@@ -4,7 +4,10 @@
       div.name.pr-1.rounded-top.middle-center
         img.photo.rounded-circle.m-1(v-if="photoUrl" :src="photoUrl")
         .photo.rounded-circle.m-1(v-else)
-        span {{ user }}
+        div
+          span.text-secondary @{{ username }}
+          br
+          span {{ name }}
       div.gap.flex-fill
       div.ago.px-1.rounded-top.middle-center
         span {{ timeAgo }}
@@ -35,7 +38,8 @@ export default defineComponent({
     const { $api, $axios } = useContext()
 
     const post = ref<PostData>()
-    const user = computed(() => post.value?.user?.name || '')
+    const name = computed(() => post.value?.user?.name || '')
+    const username = computed(() => post.value?.user?.username || '')
     const content = computed(() => post.value?.content || '')
     const timeAgo = computed(() => {
       const timeStr = post.value?.createdAt
@@ -56,7 +60,7 @@ export default defineComponent({
       }
     })
 
-    return { user, content, timeAgo, photoUrl }
+    return { name, username, content, timeAgo, photoUrl }
   },
 })
 </script>

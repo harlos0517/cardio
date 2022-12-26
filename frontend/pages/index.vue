@@ -61,10 +61,10 @@ export default defineComponent({
         await $api(createPost())({ content: postContent.value })
         postContent.value = ''
         $toast.success('Post success.')
+        await fetchPosts()
       } catch (err) {
         $toast.error(err as string)
       }
-      await fetchPosts()
       postButtonDisabled.value = false
     }
 

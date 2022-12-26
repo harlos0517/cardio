@@ -53,14 +53,18 @@ router.post('/post', auth,
   typedRequestHandler<PostApi.CreatePost.Response, PostApi.CreatePost.Request>(async(req, res, _next) => {
     const { content } = req.body
     const userId = req.session.userId
-    if (!content) return res.status(401).send({ error: 'Content cannot be blank.' })
-    const newPost = await PostModel.create({
-      userId,
-      createdAt: Date.now(),
-      content,
-    })
-    const data: PostApi.CreatePost.Response = newPost
-    res.status(200).send({ data })
+    try {
+      const newPost = await PostModel.create({
+        userId,
+        createdAt: Date.now(),
+        content,
+      })
+      const data: PostApi.CreatePost.Response = newPost
+      res.status(200).send({ data })
+    } catch (err) {
+      const error = err as Error
+      res.status(400).send({ error: error.message })
+    }
   }),
 )
 

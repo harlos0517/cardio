@@ -7,3 +7,10 @@ export const schemaRequireAll = (schema: Schema) => {
     if (attr.schema) schemaRequireAll(attr.schema)
   })
 }
+
+export const runValidatorsOnUpdate = (schema: Schema) => {
+  schema.pre(['findOneAndUpdate'], function(this: any, next) {
+    this.options.runValidators = true
+    next()
+  })
+}
