@@ -33,11 +33,15 @@ export default {
   }, // default: 3000
 
   // Global CSS: https://go.nuxtjs.dev/config-css
-  css: [],
+  css: [
+    '@/assets/styles/global.sass',
+    '@/assets/styles/scroll-bar.sass',
+    '@/assets/styles/theme.sass',
+  ],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
-    '@/plugins/vue-infinite-scroll'
+    '@/plugins/vue-infinite-scroll',
   ],
 
   router: { middleware: ['auth', 'api'] },
@@ -53,9 +57,7 @@ export default {
     '@nuxtjs/style-resources',
   ],
 
-  styleResources: {
-    sass: ['./assets/styles/*.sass'],
-  },
+  styleResources: {},
 
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
@@ -92,9 +94,9 @@ export default {
   },
 
   target: 'static',
-  
+
   generate: {
-    dir: '../docs'
+    dir: '../docs',
   },
 
   toast: {

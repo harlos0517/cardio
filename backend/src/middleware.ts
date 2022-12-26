@@ -23,11 +23,11 @@ export const googleOauthCallback = (
   UserModel.findOne({ googleId }).then(user => {
     if (!user) {
       UserModel.create({ googleId, name }).then(user => {
-        req.session.user = user
+        req.session.userId = user._id
         done(null, user)
       })
     } else {
-      req.session.user = user
+      req.session.userId = user._id
       done(null, user)
     }
   })

@@ -1,9 +1,16 @@
 <template lang="pug">
   div.post-card
     div.header.flex-row
-      div.name.px-1.rounded-top {{ user }}
+      div.name.pr-1.rounded-top.middle-center
+        img.photo.rounded-circle.m-1(v-if="photoUrl" :src="photoUrl")
+        .photo.rounded-circle.m-1(v-else)
+        div
+          span.text-secondary @{{ username }}
+          br
+          span {{ name }}
       div.gap.flex-fill
-      div.ago.px-1.rounded-top {{ timeAgo }}
+      div.ago.px-1.rounded-top.middle-center
+        span {{ timeAgo }}
     b-card.card.post-item.bg-dark.rounded-bottom(no-body)
       b-card-body.px-1.py-0.post-content {{ content }}
 </template>
@@ -24,14 +31,15 @@ type PostData = Post & { user?: User }
 
 export default defineComponent({
   props: {
-    postId: { type: String, required: true }
+    postId: { type: String, required: true },
   },
   setup(props) {
     const { postId } = toRefs(props)
-    const { $api } = useContext()
-  
+    const { $api, $axios } = useContext()
+
     const post = ref<PostData>()
-    const user = computed(() => post.value?.user?.name || '')
+    const name = computed(() => post.value?.user?.name || '')
+    const username = computed(() => post.value?.user?.username || '')
     const content = computed(() => post.value?.content || '')
     const timeAgo = computed(() => {
       const timeStr = post.value?.createdAt
@@ -39,6 +47,9 @@ export default defineComponent({
       const time = DateTime.fromISO(timeStr)
       return time.setLocale('en').toRelative({ style: 'short' })
     })
+    const photoUrl = computed(() => post.value ?
+      `${$axios.defaults.baseURL}/user/${post.value.userId}/photo` : '',
+    )
 
     onMounted(async() => {
       const postData: PostData = await $api(getPost(postId.value))()
@@ -49,7 +60,7 @@ export default defineComponent({
       }
     })
 
-    return { user, content, timeAgo }
+    return { name, username, content, timeAgo, photoUrl }
   },
 })
 </script>
@@ -59,6 +70,11 @@ export default defineComponent({
   font-size: 12px
   .header
     max-width: 320px
+    .photo
+      width: 3em
+      height: 3em
+    .name
+      border-top-left-radius: 1.75em!important
     .name, .ago
       flex: 0 1 auto
       background-color: black
@@ -78,7 +94,7 @@ export default defineComponent({
     border-top-left-radius: 0
     border-top-right-radius: 0
     overflow-x: hidden
-    overflow-y: auto 
+    overflow-y: auto
     .post-content
       white-space: pre-wrap
 </style>

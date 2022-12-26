@@ -7,24 +7,25 @@ export type UserState = {
   googleId: string | null
   email: string | null
   name: string | null
+  username: string | null
 }
 
 export const state = () => ({
   loggedIn: false,
   googleId: null,
   email: null,
+  name: null,
+  username: null,
 } as UserState)
 
-export const getters: GetterTree<UserState, UserState> = {
-  loggedIn: state => state.loggedIn,
-  email: state => state.email,
-}
+export const getters: GetterTree<UserState, UserState> = {}
 
 export const mutations: MutationTree<UserState> = {
   setUser: (state, user: User) => {
     state.googleId = user.googleId || null
     state.email = user.email || null
     state.name = user.name
+    state.username = user.username
     state.loggedIn = true
   },
   resetUser: state => {
@@ -32,6 +33,7 @@ export const mutations: MutationTree<UserState> = {
     state.googleId = null
     state.email = null
     state.name = null
+    state.username = null
   },
 }
 

@@ -1,7 +1,8 @@
 export type User = {
   googleId?: string
+  discordId?: string
   email?: string
-  username?: string
+  username: string
   name: string
 }
 
@@ -15,9 +16,16 @@ export namespace GetUser {
   export type Response = UserResponse
 }
 
-export namespace EditMe {
+export namespace EditName {
   export type Request = {
     name: string
+  }
+  export type Response = UserResponse
+}
+
+export namespace EditUsername {
+  export type Request = {
+    username: string
   }
   export type Response = UserResponse
 }

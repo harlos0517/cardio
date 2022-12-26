@@ -26,11 +26,3 @@ export const typedRequestHandler = <RES = undefined, REQ = undefined>(
     func(req, res, next)
   }
 ) as RequestHandler
-
-export const getUserId = (req: Request) => req.session.user?._id as string | undefined
-
-// eslint-disable-next-line @typescript-eslint/ban-types
-export const withUserId = <T = {}>(req: Request, obj: T) => {
-  const userId = getUserId(req)
-  return { ...obj, ...(userId ? { userId } : {}) } as (T & { userId?: string })
-}

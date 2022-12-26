@@ -42,7 +42,7 @@ router.get('/posts/latest',
 
 router.get('/posts/me', auth,
   typedRequestHandler<PostApi.GetLatestPosts.Response>(async(req, res, _next) => {
-    const userId = req.session.user?._id
+    const userId = req.session.userId
     const posts = await PostModel.find({ userId }).select('_id')
     const postIds = posts.map(({ _id }) => _id)
     res.status(200).send({ data: postIds })
@@ -52,15 +52,19 @@ router.get('/posts/me', auth,
 router.post('/post', auth,
   typedRequestHandler<PostApi.CreatePost.Response, PostApi.CreatePost.Request>(async(req, res, _next) => {
     const { content } = req.body
-    const userId = req.session.user?._id
-    if (!content) return res.status(401).send({ error: 'Content cannot be blank.' })
-    const newPost = await PostModel.create({
-      userId,
-      createdAt: Date.now(),
-      content,
-    })
-    const data: PostApi.CreatePost.Response = newPost
-    res.status(200).send({ data })
+    const userId = req.session.userId
+    try {
+      const newPost = await PostModel.create({
+        userId,
+        createdAt: Date.now(),
+        content,
+      })
+      const data: PostApi.CreatePost.Response = newPost
+      res.status(200).send({ data })
+    } catch (err) {
+      const error = err as Error
+      res.status(400).send({ error: error.message })
+    }
   }),
 )
 
