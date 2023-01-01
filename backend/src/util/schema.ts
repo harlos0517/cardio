@@ -1,4 +1,8 @@
-import { Schema } from 'mongoose'
+import mongoose, { Schema } from 'mongoose'
+
+export const allowEmptyString = () => {
+  mongoose.Schema.Types.String.checkRequired(v => v !== null)
+}
 
 export const schemaRequireAll = (schema: Schema) => {
   Object.entries(schema.paths).forEach(([k, _]) => {
@@ -9,6 +13,7 @@ export const schemaRequireAll = (schema: Schema) => {
 }
 
 export const runValidatorsOnUpdate = (schema: Schema) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   schema.pre(['findOneAndUpdate'], function(this: any, next) {
     this.options.runValidators = true
     next()
