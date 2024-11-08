@@ -6,9 +6,9 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "start": "nest start",
-    "dev": "nest start --watch",
-    "debug": "nest start --debug --watch",
+    "start": "nest start -e 'tsx'",
+    "dev": "nest start -e 'tsx' --watch",
+    "debug": "nest start -e 'tsx' --debug --watch",
     "build": "nest build",
     "prod": "tsx dist/src/main",
     "lint": "eslint --flag unstable_ts_config",
