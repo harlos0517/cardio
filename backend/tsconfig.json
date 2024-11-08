@@ -1,0 +1,15 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "types": ["@types/node"],
+    "baseUrl": "."
+  },
+  "include": [
+    "**/*.ts",
+    "**/*.d.ts",
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+  ],
+}

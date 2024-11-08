@@ -1,0 +1,16 @@
+{
+  "name": "api",
+  "version": "1.0.0",
+  "main": "src/index.ts",
+  "author": "Harlos",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "class-transform": "^0.7.0",
+    "class-validator": "^0.14.1",
+    "class-validator-jsonschema": "^5.0.1",
+    "express": "^4.21.1",
+    "swagger-ui-express": "^5.0.1",
+    "tsx": "^4.19.2"
+  }
+}
