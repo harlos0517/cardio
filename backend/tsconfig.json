@@ -2,14 +2,19 @@
   "extends": "../tsconfig.json",
   "compilerOptions": {
     "types": ["@types/node"],
-    "baseUrl": "."
+    "baseUrl": ".",
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ],
+    }
   },
   "include": [
     "**/*.ts",
-    "**/*.d.ts",
+    "**/*.d.ts"
   ],
   "exclude": [
     "node_modules",
-    "dist",
-  ],
+    "dist"
+  ]
 }

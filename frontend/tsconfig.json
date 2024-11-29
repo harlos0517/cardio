@@ -1,20 +1,6 @@
 {
-  "files": [],
-  "extends": "../tsconfig.json",
-  "compilerOptions": {
-    "baseUrl": "."
-  },
   "references": [
     { "path": "./tsconfig.app.json" },
     { "path": "./tsconfig.node.json" }
-  ],
-  "include": [
-    "**/*.ts",
-    "**/*.d.ts",
-    "**/*.tsx"
-  ],
-  "exclude": [
-    "node_modules",
-    "*.conifg.*",
   ],
 }

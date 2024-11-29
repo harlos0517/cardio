@@ -7,14 +7,6 @@
     "strictPropertyInitialization": false,
     "module": "ESNext",
     "moduleResolution": "Bundler",
-    "paths": {
-      "@/*": [
-        "./src/*"
-      ],
-      "~/*": [
-        "./*"
-      ]
-    },
     "resolveJsonModule": true,
     "noEmit": true,
     "outDir": "./dist",
