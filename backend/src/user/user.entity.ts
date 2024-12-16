@@ -1,12 +1,9 @@
-import { BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
+import { Column, Entity } from 'typeorm'
 
-import { Post } from '@/post/post.entity'
+import { BaseEntity } from '@/base.entity'
 
 @Entity()
 export class User extends BaseEntity {
-  @PrimaryGeneratedColumn()
-  id: number
-
   @Column('varchar', { length: 255 })
   email: string
 
@@ -21,7 +18,4 @@ export class User extends BaseEntity {
 
   @Column('varchar', { nullable: true })
   discordId: string
-
-  @OneToMany(() => Post, post => post.user)
-  posts: Post[]
 }

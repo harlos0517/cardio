@@ -1,4 +1,5 @@
 import { HttpException, Injectable } from '@nestjs/common'
+
 import { User } from './user.entity'
 
 @Injectable()

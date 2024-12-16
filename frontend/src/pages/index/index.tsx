@@ -20,6 +20,9 @@ function Home() {
 
   return <Center><Container size="1400px">
     <Grid gutter="md" justify="center">
+      <Grid.Col span="content">
+        <Post username='username' content='' date={DateTime.now()} isCreate/>
+      </Grid.Col>
       {posts.map((post, index) =>
         <Grid.Col key={index} span="content">
           <Post {...post} />
